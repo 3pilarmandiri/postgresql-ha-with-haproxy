@@ -1,0 +1,10 @@
+ETCD_LISTEN_PEER_URLS="http://{{ ansible_host }}:2380,http://127.0.0.1:7001"
+ETCD_LISTEN_CLIENT_URLS="http://127.0.0.1:2379,http://{{ ansible_host }}:2379"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://{{ ansible_host }}:2380"
+ETCD_INITIAL_CLUSTER="etcd0=http://{{ ansible_host }}:2380,"
+ETCD_ADVERTISE_CLIENT_URLS="http://{{ ansible_host }}:2379"
+ETCD_INITIAL_CLUSTER_TOKEN="node1"
+ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_ENABLE_V2="true"
+
+## create by ansible 

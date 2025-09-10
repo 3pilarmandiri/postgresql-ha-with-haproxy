@@ -1,0 +1,15 @@
+---
+pg_version: 16
+pg_conf_dir: "/etc/postgresql/{{ pg_version }}/main"
+pg_data_dir: "/var/lib/postgresql/{{ pg_version }}/main"
+
+pg_credentials:
+  replication:
+    username: replicator
+    password: kN9@SK5o61f81L
+  superuser:
+    username: postgres
+    password: Vtd9E2MD5@9297
+  admin:
+    username: admin
+    password: Hd48tDKT7X8t!L

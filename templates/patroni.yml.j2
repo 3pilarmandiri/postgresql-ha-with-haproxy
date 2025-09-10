@@ -1,0 +1,59 @@
+scope: postgresx2z
+namespace: /pg-tauago/
+name: {{ inventory_hostname }}
+
+restapi:
+    listen: {{ ansible_host }}:8008
+    connect_address: {{ ansible_host }}:8008
+
+etcd:
+    host: {{ hostvars[groups['etcd'][0]].ansible_host }}:2379
+
+bootstrap:
+    dcs:
+        ttl: 30
+        loop_wait: 10
+        retry_timeout: 10
+        maximum_lag_on_failover: 1048576
+        postgresql:
+            use_pg_rewind: true
+
+    initdb:
+    - encoding: UTF8
+    - data-checksums
+
+    pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+{% for node in groups['nodes'] %}
+    - host replication replicator {{ hostvars[node].ansible_host }}/0 md5
+{% endfor %}
+    - host all all 0.0.0.0/0 md5
+
+    users:
+        {{ pg_credentials.admin.username }}:
+            password: {{ pg_credentials.admin.password }}
+            options:
+                - createrole
+                - createdb
+
+postgresql:
+    listen: {{ ansible_host }}:5432
+    connect_address: {{ ansible_host }}:5432
+    bin_dir: /usr/lib/postgresql/{{ pg_version }}/bin
+    data_dir: /var/lib/postgresql/{{ pg_version }}-patroni
+    pgpass: /tmp/pgpass
+    authentication:
+        replication:
+            username: {{ pg_credentials.replication.username }}
+            password: {{ pg_credentials.replication.password }}
+        superuser:
+            username: {{ pg_credentials.superuser.username }}
+            password: {{ pg_credentials.superuser.password }}
+    parameters:
+        unix_socket_directories: '.'
+
+tags:
+    nofailover: false
+    noloadbalance: false
+    clonefrom: false
+    nosync: false

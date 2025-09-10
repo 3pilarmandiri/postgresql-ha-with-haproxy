@@ -23,6 +23,7 @@ It automates the setup of PostgreSQL 16, Patroni configuration, cluster coordina
 
 ## 📦 Project Structure
 
+```
 .
 ├── inventory.ini
 ├── playbooks/
@@ -37,6 +38,7 @@ It automates the setup of PostgreSQL 16, Patroni configuration, cluster coordina
 └── vars/
 ├── pg_version.yml
 └── pg_credentials.yml
+```
 
 ---
 

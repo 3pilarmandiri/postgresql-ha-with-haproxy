@@ -1,0 +1,161 @@
+- name: Update hostnames based on inventory
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Set hostname from inventory alias
+      hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: Build /etc/hosts file from inventory
+      copy:
+        dest: /etc/hosts
+        content: |
+          #created by ansible script
+          127.0.0.1   localhost
+          ::1         localhost ip6-localhost ip6-loopback
+          fe00::0     ip6-localnet
+          ff00::0     ip6-mcastprefix
+          ff02::1     ip6-allnodes
+          ff02::2     ip6-allrouters
+
+          {% for host in groups['all'] %}
+          {{ hostvars[host].ansible_host }}   {{ host }}
+          {% endfor %}
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install basic tools
+      apt:
+        name:
+          - net-tools
+          - iputils-ping
+        state: present
+        update_cache: yes
+
+- name: Install and configure etcd on etcd hosts
+  hosts: etcd
+  become: yes
+
+  tasks:
+    - name: Install etcd
+      apt:
+        name: etcd-server
+        state: present
+        update_cache: yes
+
+    - name: Copy etcd config template
+      template:
+        src: templates/etcd.j2
+        dest: /etc/default/etcd
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure etcd service is enabled and running
+      systemd:
+        name: etcd
+        enabled: yes
+        state: started
+
+- name: Install PostgreSQL and Patroni
+  hosts: nodes
+  become: yes
+  vars_files:
+    - vars/pg_vars.yml
+
+  tasks:
+    - name: Install PostgreSQL and dependencies
+      apt:
+        name:
+          - "postgresql-{{ pg_version }}"
+          - "postgresql-client-{{ pg_version }}"
+          - "postgresql-contrib-{{ pg_version }}"
+          - python3-pip
+          - python3-psycopg2
+          - pipx
+
+        state: present
+        update_cache: yes
+
+    - name: Show PostgreSQL config directory
+      ansible.builtin.debug:
+        msg: "PostgreSQL config directory is {{ pg_conf_dir }}"
+
+    - name: Configure PostgreSQL to listen on all addresses
+      ansible.builtin.replace:
+        path: "{{ pg_conf_dir }}/postgresql.conf"
+        regexp: "^#?\\s*listen_addresses\\s*=.*"
+        replace: "listen_addresses = '*'"
+        backup: yes
+
+    - name: Ensure pg_hba.conf allows all connections with md5
+      lineinfile:
+        path: "{{ pg_conf_dir }}/pg_hba.conf"
+        line: "host    all             all             0.0.0.0/0                md5"
+        state: present
+        insertafter: EOF
+        backup: yes
+      # notify: Restart PostgreSQL
+
+    - name: Restart PostgreSQL
+      ansible.builtin.systemd:
+        name: postgresql
+        state: restarted
+        enabled: yes
+
+    - name: Install patroni
+      apt:
+        name:
+          - patroni
+
+    - name: Stop PostgreSQL
+      ansible.builtin.systemd:
+        name: postgresql
+        state: stopped
+        enabled: no
+
+    - name: Copy Patroni configuration
+      template:
+        src: templates/patroni.yml.j2
+        # src: templates/haproxy-lb-yml.j2
+        dest: /etc/patroni/config.yml
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Stop Patroni
+      ansible.builtin.systemd:
+        name: patroni
+        state: stopped
+
+    - name: Start Patroni
+      ansible.builtin.systemd:
+        name: patroni
+        state: started
+        enabled: yes
+
+- name: Deploy HAProxy config for PostgreSQL
+  hosts: haproxy
+  become: yes
+
+  tasks:
+    - name: Install Haproxy
+      apt:
+        name: haproxy
+        state: present
+
+    - name: Copy HAProxy configuration
+      template:
+        src: templates/haproxy.conf.j2
+        dest: /etc/haproxy/haproxy.cfg
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Restart HAProxy
+      systemd:
+        name: haproxy
+        state: restarted
+        enabled: yes
