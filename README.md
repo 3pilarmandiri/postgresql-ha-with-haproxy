@@ -9,7 +9,7 @@ It automates the setup of PostgreSQL 16, Patroni configuration, cluster coordina
 
 ```bash
 ansible-playbook -u ubuntu -i inventory.ini install-cluster.yml
-
+```
 
 ## ✨ Features
 
@@ -45,7 +45,7 @@ ansible-playbook -u ubuntu -i inventory.ini install-cluster.yml
 └── vars/
 └── pg_vars.yml
 
-````
+```
 
 ---
 
@@ -62,7 +62,7 @@ pg-etcd ansible_host=10.11.12.104
 pg-node-1 ansible_host=10.11.12.101
 pg-node-2 ansible_host=10.11.12.102
 pg-node-3 ansible_host=10.11.12.103
-````
+```
 
 ## 🏗️ Architecture
 
