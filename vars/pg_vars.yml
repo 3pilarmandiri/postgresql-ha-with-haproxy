@@ -6,10 +6,10 @@ pg_data_dir: "/var/lib/postgresql/{{ pg_version }}/main"
 pg_credentials:
   replication:
     username: replicator
-    password: kN9@SK5o61f81L
+    password: ChangeMeOrDie
   superuser:
     username: postgres
-    password: Vtd9E2MD5@9297
+    password: ChangeMeOrDie
   admin:
     username: admin
-    password: Hd48tDKT7X8t!L
+    password: ChangeMeOrDie
