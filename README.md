@@ -86,3 +86,21 @@ pg-node-3 ansible_host=10.11.12.103
                └───────────┘
 
 ```
+
+## 📝 Notes
+
+Designed for Ubuntu 22.04+ / 24.04 hosts.
+
+Tested with PostgreSQL 16.
+
+Etcd and Patroni communicate over the private network.
+
+Use firewall rules to secure external access.
+
+## 🤝 Contributing
+
+Feel free to fork this project and submit PRs for improvements (e.g. support for Consul/Zookeeper as DCS, TLS for HAProxy, or Docker/Kubernetes deployments).
+
+## 📜 License
+
+MIT License – you are free to use, modify, and distribute this project.
