@@ -5,6 +5,12 @@ It automates the setup of PostgreSQL 16, Patroni configuration, cluster coordina
 
 ---
 
+## How to run
+
+```
+ansible-playbook -u ubuntu -i inventory.ini install-cluster.yml
+```
+
 ## ✨ Features
 
 - Automated installation of **PostgreSQL 16**.
