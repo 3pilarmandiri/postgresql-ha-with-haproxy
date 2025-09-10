@@ -109,6 +109,7 @@
       apt:
         name:
           - patroni
+        state: present
 
     - name: Stop PostgreSQL
       ansible.builtin.systemd:
