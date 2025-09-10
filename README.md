@@ -25,19 +25,19 @@ It automates the setup of PostgreSQL 16, Patroni configuration, cluster coordina
 
 ```
 .
+├── ansible.cfg
+├── install-cluster.yml
 ├── inventory.ini
-├── playbooks/
-│ ├── install-etcd.yml
-│ ├── install-pg-patroni.yml
-│ ├── deploy-haproxy.yml
-│ └── set-hostnames.yml
+├── playbook.yml
+├── README.md
 ├── templates/
-│ ├── etcd.j2
-│ ├── patroni.yml.j2
-│ └── haproxy.conf.j2
+│   ├── etcd.j2
+│   ├── haproxy-lb-yml.j2
+│   ├── haproxy.conf.j2
+│   └── patroni.yml.j2
 └── vars/
-├── pg_version.yml
-└── pg_credentials.yml
+    └── pg_vars.yml
+
 ```
 
 ---
