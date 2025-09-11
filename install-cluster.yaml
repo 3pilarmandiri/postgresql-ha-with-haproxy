@@ -64,6 +64,7 @@
   become: yes
   vars_files:
     - vars/pg_vars.yml
+    - vars/pg_creds.yml
 
   tasks:
     - name: Install PostgreSQL and dependencies

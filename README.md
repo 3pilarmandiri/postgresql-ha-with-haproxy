@@ -5,6 +5,33 @@ It automates the setup of PostgreSQL 16, Patroni configuration, cluster coordina
 
 ---
 
+## 🚀 How to create credentials
+
+```bash
+ansible-vault create vars/pg_creds.yml
+```
+
+set your password, then copy paste some string like this :
+
+```
+pg_credentials:
+  replication:
+    username: replicator
+    password: "ChangeMeOrDie"
+  superuser:
+    username: postgres
+    password: "ChangeMeOrDie"
+  admin:
+    username: admin
+    password: "ChangeMeOrDie"
+```
+
+to edit :
+
+```bash
+ ansible-vault edit vars/pg_creds.yml
+```
+
 ## 🚀 How to run
 
 ```bash
