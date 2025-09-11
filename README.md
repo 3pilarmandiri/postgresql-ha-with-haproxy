@@ -34,8 +34,11 @@ to edit :
 
 ## 🚀 How to run
 
+Create pass.txt and type password for vault.
+then fire this line below
+
 ```bash
-ansible-playbook -u ubuntu -i inventory.ini install-cluster.yaml
+ansible-playbook -u ubuntu  -i inventory.ini install-cluster.yaml --vault-password-file pass.txt
 ```
 
 ## ✨ Features
