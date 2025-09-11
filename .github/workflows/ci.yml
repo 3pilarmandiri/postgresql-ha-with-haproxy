@@ -32,4 +32,6 @@ jobs:
         run: ansible-lint .
 
       - name: Run Ansible syntax check
-        run: ansible-playbook -i inventory.ini install-cluster.yml --syntax-check
+        run: |
+          ansible-playbook -i inventory.ini \
+          install-cluster.yml --syntax-check
